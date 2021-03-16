@@ -9,6 +9,16 @@ use Illuminate\Support\Facades\Validator;
 class PostController extends Controller
 {
     /**
+     * Creates a new post controller instance
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth:api', ['except' => ['index', 'show']]);
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\JsonResponse
