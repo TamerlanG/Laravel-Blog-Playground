@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PostRequest;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -35,20 +36,13 @@ class PostController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function store(Request $request)
+    public function store(PostRequest $request)
     {
         $user_id = $request->user()->id;
-        $validator = Validator::make($request->all(), [
-            'title' => 'required|string|between:2,100',
-            'body' => 'required',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json($validator->errors()->toJson(), 400);
-        }
+        $data = $request->validated();
 
         $post = Post::create(array_merge(
-            $validator->validated(),
+            $data,
             ['user_id' => $user_id]
         ));
 
@@ -76,24 +70,17 @@ class PostController extends Controller
      * @param int $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update(Request $request, $id)
+    public function update(PostRequest $request, $id)
     {
         $user_id = $request->user()->id;
-        $validator = Validator::make($request->all(), [
-            'title' => 'required|string|between:2,100',
-            'body' => 'required',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json($validator->errors()->toJson(), 400);
-        }
         $post = Post::findOrFail($id);
+        $data = $request->validated();
 
         if($post->user_id != $user_id){
             return response()->json(['message' => 'You are not allowed to edit this post'], 401);
         }
 
-        $post->update($validator->validated());
+        $post->update($data);
 
         return response()->json([
             'message' => 'Post successfully updated',
