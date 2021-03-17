@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class PostController extends Controller
@@ -36,6 +37,7 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
+        $user_id = $request->user()->id;
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|between:2,100',
             'body' => 'required',
@@ -45,7 +47,10 @@ class PostController extends Controller
             return response()->json($validator->errors()->toJson(), 400);
         }
 
-        $post = Post::create($validator->validated());
+        $post = Post::create(array_merge(
+            $validator->validated(),
+            ['user_id' => $user_id]
+        ));
 
         return response()->json([
             'message' => 'Post successfully created',
@@ -73,6 +78,7 @@ class PostController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $user_id = $request->user()->id;
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|between:2,100',
             'body' => 'required',
@@ -81,10 +87,13 @@ class PostController extends Controller
         if ($validator->fails()) {
             return response()->json($validator->errors()->toJson(), 400);
         }
-
-        Post::findOrFail($id)->update($validator->validated());
-
         $post = Post::findOrFail($id);
+
+        if($post->user_id != $user_id){
+            return response()->json(['message' => 'You are not allowed to edit this post'], 401);
+        }
+
+        $post->update($validator->validated());
 
         return response()->json([
             'message' => 'Post successfully updated',
@@ -95,12 +104,20 @@ class PostController extends Controller
     /**
      * Remove the specified resource from storage.
      *
+     * @param Request $request
      * @param int $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy($id)
+    public function destroy(Request $request, int $id)
     {
-        Post::destroy($id);
+        $user_id = $request->user()->id;
+        $post = Post::findOrFail($id);
+
+        if($post->user_id != $user_id){
+            return response()->json(['message' => 'You are not allowed to delete this post'], 401);
+        }
+
+        $post->delete();
 
         return response()->json([], 204);
     }
