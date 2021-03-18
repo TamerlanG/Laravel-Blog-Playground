@@ -14,7 +14,8 @@ class Post extends Model
     protected $fillable = [
         'title',
         'body',
-        'user_id'
+        'user_id',
+        'category_id'
     ];
 
     /**
@@ -23,5 +24,13 @@ class Post extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Get the associated category
+     */
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
     }
 }

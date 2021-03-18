@@ -12,4 +12,11 @@ class Category extends Model
     protected $fillable = [
         'title',
     ];
+
+    /**
+     * Get posts of category
+     */
+    public function posts(){
+        return $this->hasMany(Post::class);
+    }
 }

@@ -27,6 +27,7 @@ class PostRequest extends FormRequest
         return [
             'title' => 'required|string|between:2,100',
             'body' => 'required',
+            'category_id' => 'exists:categories,id'
         ];
     }
 }
