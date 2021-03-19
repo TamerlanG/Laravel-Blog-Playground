@@ -25,7 +25,8 @@ class PostController extends Controller
      */
     public function index()
     {
-        return response()->json(Post::paginate(15));
+        $posts = Post::filterBy(\request()->all())->paginate(15);
+        return response()->json($posts);
     }
 
     /**

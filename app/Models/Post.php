@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Utilities\FilterBuilder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -17,6 +18,17 @@ class Post extends Model
         'user_id',
         'category_id'
     ];
+
+    /**
+     * Method used in filtration
+     */
+    public function scopeFilterBy($query, $filters)
+    {
+        $namespace = 'App\Utilities\PostFilters';
+        $filter = new FilterBuilder($query, $filters, $namespace);
+
+        return $filter->apply();
+    }
 
     /**
      * Get the associated user
