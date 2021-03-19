@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\CategoryRequest;
-use App\Models\Category;
+use App\Http\Requests\TagRequest;
+use App\Models\Tag;
 use Illuminate\Http\JsonResponse;
 
-class CategoryController extends Controller
+class TagController extends Controller
 {
     /**
      * Creates a new category controller instance
@@ -25,70 +25,69 @@ class CategoryController extends Controller
      */
     public function index(): JsonResponse
     {
-        return response()->json(Category::all());
+        return response()->json(Tag::all());
     }
-
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param TagRequest $request
      * @return JsonResponse
      */
-    public function store(CategoryRequest $request): JsonResponse
+    public function store(TagRequest $request): JsonResponse
     {
         $data = $request->validated();
 
-        $category = Category::create($data);
+        $tag = Tag::create($data);
 
         return response()->json([
-            'message' => 'Category successfully created',
-            'category' => $category
+            'message' => 'Tag successfully created',
+            'tag' => $tag
         ], 201);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return JsonResponse
      */
-    public function show($id): JsonResponse
+    public function show(int $id): JsonResponse
     {
-        return response()->json(Category::findOrFail($id));
+        return response()->json(Tag::findOrFail($id));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param CategoryRequest $request
+     * @param TagRequest $request
      * @param int $id
      * @return JsonResponse
      */
-    public function update(CategoryRequest $request, $id): JsonResponse
+    public function update(TagRequest $request, int $id)
     {
-        $category = Category::findOrFail($id);
+        $tag = Tag::findOrFail($id);
         $data = $request->validated();
 
-        $category->update($data);
+        $tag->update($data);
 
         return response()->json([
-            'message' => 'Category successfully updated',
-            'category' => $category
+            'message' => 'Tag successfully updated',
+            'tag' => $tag
         ], 201);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return JsonResponse
      */
-    public function destroy($id): JsonResponse
+    public function destroy(int $id): JsonResponse
     {
-        $category = Category::findOrFail($id);
+        $tag = Tag::findOrFail($id);
 
-        $category->delete();
+        $tag->delete();
 
         return response()->json([], 204);
     }

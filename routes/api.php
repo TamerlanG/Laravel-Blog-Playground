@@ -28,4 +28,5 @@ Route::group([
 Route::resources([
     'posts' => \App\Http\Controllers\PostController::class,
     'category' => \App\Http\Controllers\CategoryController::class,
+    'tags' =>\App\Http\Controllers\TagController::class
 ]);
