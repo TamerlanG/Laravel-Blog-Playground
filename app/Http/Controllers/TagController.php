@@ -25,7 +25,7 @@ class TagController extends Controller
      */
     public function index(): JsonResponse
     {
-        return response()->json(Tag::all());
+        return response()->json(Tag::paginate(15));
     }
 
     /**
