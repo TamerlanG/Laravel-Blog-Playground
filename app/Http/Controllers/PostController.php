@@ -7,6 +7,7 @@ use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use function Symfony\Component\Translation\t;
 
 class PostController extends Controller
 {
@@ -45,6 +46,10 @@ class PostController extends Controller
             $data,
             ['user_id' => $user_id]
         ));
+
+        if($data['tags']){
+            $post->tags()->attach($data['tags']);
+        }
 
         return response()->json([
             'message' => 'Post successfully created',
