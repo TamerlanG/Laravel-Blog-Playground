@@ -5,22 +5,14 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
+use App\Models\Staff;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
-    /**
-     * Creates a new auth controller instance
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->middleware('auth:api', ['except' => ['login', 'register']]);
-    }
-
     /**
      * Get a JWT via given credentials
      *
@@ -30,12 +22,19 @@ class AuthController extends Controller
     public function login(LoginRequest $request)
     {
         $data = $request->validated();
+        $user = Staff::where('email', $data['email'])->first();
 
-        if (!$token = auth()->attempt($data)) {
+        if(!$user){
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        return $this->createNewToken($token);
+        if(!Hash::check($data['password'], $user->password)){
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+
+        $token = $user->createToken('Laravel Password Grant Client')->accessToken;
+        $response = ['token' => $token];
+        return response()->json($response);
     }
 
     /**

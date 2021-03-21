@@ -2,13 +2,15 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Passport\HasApiTokens;
 
-class User extends Authenticatable
+class Reader extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasApiTokens, Notifiable;
+
+    protected $table = 'reader';
 
     /**
      * The attributes that are mass assignable.
@@ -39,12 +41,4 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-
-    /**
-     * Get posts of user
-     */
-    public function posts(): \Illuminate\Database\Eloquent\Relations\HasMany
-    {
-        return $this->hasMany(Post::class);
-    }
 }

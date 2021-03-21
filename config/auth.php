@@ -14,7 +14,7 @@ return [
     */
 
     'defaults' => [
-        'guard' => 'api',
+        'guard' => 'reader',
         'passwords' => 'users',
     ],
 
@@ -40,11 +40,25 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
-
         'api' => [
-            'driver' => 'jwt',
+            'driver' => 'passport',
             'provider' => 'users',
             'hash' => false,
+        ],
+
+        'staff' => [
+            'driver' => 'passport',
+            'provider' => 'staff',
+        ],
+
+        'writer' => [
+            'driver' => 'passport',
+            'provider' => 'writer',
+        ],
+
+        'reader' => [
+            'driver' => 'passport',
+            'provider' => 'reader',
         ],
     ],
 
@@ -66,15 +80,18 @@ return [
     */
 
     'providers' => [
-        'users' => [
+        'staff' => [
             'driver' => 'eloquent',
-            'model' => App\Models\User::class,
+            'model' => App\Models\Staff::class,
         ],
-
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
+        'writer' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Writer::class,
+        ],
+        'reader' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Reader::class,
+        ],
     ],
 
     /*
