@@ -30,3 +30,6 @@ Route::resources([
     'category' => \App\Http\Controllers\CategoryController::class,
     'tags' =>\App\Http\Controllers\TagController::class
 ]);
+
+Route::get('/redis', [\App\Http\Controllers\RedisController::class, 'index']);
+Route::post('/redis/set', [\App\Http\Controllers\RedisController::class, 'set']);
