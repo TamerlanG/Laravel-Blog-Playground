@@ -15,7 +15,7 @@ class PostController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['index', 'show']]);
+        $this->middleware('auth:api', ['except' => ['index', 'show', 'search']]);
     }
 
     /**
@@ -110,5 +110,11 @@ class PostController extends Controller
         $post->delete();
 
         return response()->json([], 204);
+    }
+
+    public function search(Request $request){
+        $query = $request['title'];
+        $post = Post::search($query)->paginate(15);
+        return response()->json($post);
     }
 }

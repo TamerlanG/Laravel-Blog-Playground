@@ -5,10 +5,11 @@ namespace App\Models;
 use App\Utilities\FilterBuilder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Laravel\Scout\Searchable;
 
 class Post extends Model
 {
-    use HasFactory;
+    use HasFactory, Searchable;
 
     protected $table = 'posts';
 
@@ -28,6 +29,16 @@ class Post extends Model
         $filter = new FilterBuilder($query, $filters, $namespace);
 
         return $filter->apply();
+    }
+
+    /**
+     * Get the name of the index associated with the model.
+     *
+     * @return string
+     */
+    public function searchableAs()
+    {
+        return 'posts_index';
     }
 
     /**

@@ -30,3 +30,5 @@ Route::resources([
     'category' => \App\Http\Controllers\CategoryController::class,
     'tags' =>\App\Http\Controllers\TagController::class
 ]);
+
+Route::post('/posts/search', [\App\Http\Controllers\PostController::class, 'search']);
