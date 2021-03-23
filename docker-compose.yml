@@ -17,8 +17,10 @@ services:
             - '.:/var/www/html'
         networks:
             - sail
+            - rabbitmq_net
         depends_on:
             - mysql
+            - rabbitmq_service
     mysql:
         image: 'mysql:8.0'
         ports:
@@ -35,8 +37,28 @@ services:
             - sail
         healthcheck:
           test: ["CMD", "mysqladmin", "ping"]
+    rabbitmq_service:
+        image: rabbitmq:3-management-alpine
+        ports:
+          - 5672:5672
+          - 15672:15672
+        volumes:
+          - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+          - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+        networks:
+          - rabbitmq_net
+          - sail
+    mailhog:
+      image: 'mailhog/mailhog:latest'
+      ports:
+        - '${FORWARD_MAILHOG_PORT:-1025}:1025'
+        - '${FORWARD_MAILHOG_DASHBOARD_PORT:-8025}:8025'
+      networks:
+        - sail
 networks:
     sail:
+        driver: bridge
+    rabbitmq_net:
         driver: bridge
 volumes:
     sailmysql:
